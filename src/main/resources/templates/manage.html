@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Manage Bookings</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="container"><h2>Your Bookings</h2>
+<table><tr><th>Provider</th><th>Date</th><th>Status</th><th>Action</th></tr>
+<tr th:each="booking : ${bookings}">
+<td th:text="${booking.providerName}">Provider</td>
+<td th:text="${booking.eventDate}">Date</td>
+<td th:text="${booking.status}">Status</td>
+<td><form th:action="@{/bookings/cancel}" method="post">
+<input type="hidden" name="providerName" th:value="${booking.providerName}">
+<button type="submit">Cancel</button></form></td>
+</tr></table>
+</div></body></html>

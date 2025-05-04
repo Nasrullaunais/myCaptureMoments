@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>New Booking</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="container"><h2>New Booking</h2>
+<form th:action="@{/bookings/create}" method="post">
+<select name="providerName" required>
+<option th:each="provider : ${providers}" th:value="${provider.name}" th:text="${provider.name + ' (' + provider.specialty + ')'}"></option>
+</select>
+<input type="text" name="type" placeholder="Event Type (e.g. Wedding)" required>
+<input type="date" name="eventDate" required>
+<input type="text" name="location" placeholder="Location" required>
+<button type="submit">Confirm Booking</button></form>
+</div></body></html>

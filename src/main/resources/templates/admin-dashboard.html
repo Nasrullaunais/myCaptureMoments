@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2>Admin Dashboard</h2>
+    <p>Manage bookings, providers, and system settings.</p>
+
+    <a th:href="@{/admin/providers}" class="btn">Manage Providers</a>
+    <a th:href="@{/admin/bookings}" class="btn">Manage Bookings</a>
+    <a th:href="@{/logout}" class="btn">Logout</a>
+
+    <h3>Recent Bookings</h3>
+    <table>
+        <tr><th>Customer</th><th>Provider</th><th>Date</th><th>Status</th></tr>
+            <tr th:each="booking : ${session.}">
+            <td th:text="${booking.customerName}">User</td>
+            <td th:text="${booking.providerName}">Photographer</td>
+            <td th:text="${booking.eventDate}">2025-01-01</td>
+            <td th:text="${booking.status}">Pending</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

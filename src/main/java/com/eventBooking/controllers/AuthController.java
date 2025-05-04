@@ -1,0 +1,99 @@
+package com.eventBooking.controllers;
+
+import com.eventBooking.models.Booking;
+import com.eventBooking.models.User;
+import com.eventBooking.services.BookingService;
+import com.eventBooking.services.UserService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
+
+@Controller
+public class AuthController {
+    private final UserService userService = new UserService();
+    private final BookingService bookingService = new BookingService();
+
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("error", false);
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam String username,
+                        @RequestParam String password,
+                        HttpSession session, Model model) {
+
+
+        if(userService.validateLogin(username, password)) {
+            session.setAttribute("username", username);
+            session.setAttribute("password", password);
+            model.addAttribute("error", false);
+
+            if(username.equals("admin") && password.equals("12345")) {
+                session.setAttribute("role", "admin");
+                return "admin-dashboard";
+            }
+            else {
+                session.setAttribute("role", "user");
+                List<Booking> bookings = bookingService.getAllBookings();
+                session.setAttribute("bookings", bookings);
+                return "dashboard";
+            }
+        }
+        else {
+            model.addAttribute("message", "Invalid username or password");
+            model.addAttribute("error", true);
+            return "login";
+        }
+    }
+
+    @GetMapping("/register")
+    public String register(Model model) {
+        model.addAttribute("error", false);
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestParam String username,
+                           @RequestParam String password,
+                           @RequestParam String confirmPassword,
+                           HttpSession session, Model model) {
+        User newUser = new User(username, password, "user");
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("message", "Passwords do not match");
+            return "register";
+        }
+        if (userService.registerUser(newUser)){
+            return "dashboard";
+        }
+        else {
+            model.addAttribute("message", "User already exists. Login instead");
+            model.addAttribute("error", true);
+            return "login";
+        }
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
+
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "index";
+    }
+
+
+}

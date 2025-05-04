@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2>Photographer Gallery</h2>
+    <p>Explore available photographers and videographers.</p>
+    <table>
+        <tr><th>Name</th><th>Specialty</th><th>Rating</th><th>Action</th></tr>
+        <tr th:each="provider : ${providers}">
+            <td th:text="${provider.name}">Jane Doe</td>
+            <td th:text="${provider.specialty}">Weddings</td>
+            <td th:text="${provider.rating}">5</td>
+            <td><a th:href="@{'/bookings/new?provider=' + ${provider.name}}" class="btn">Book</a></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
