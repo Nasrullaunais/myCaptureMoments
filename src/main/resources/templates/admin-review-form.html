@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Review</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #4caf50;
+            --accent-color: #8bc34a;
+            --text-color: #333;
+            --light-color: #f1f8e9;
+        }
+        
+        .admin-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .admin-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .admin-btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            margin-top: 20px;
+        }
+        
+        .btn-submit {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .btn-cancel {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        
+        .rating-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .rating-star {
+            color: #ff9800;
+            font-size: 24px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="admin-header">
+        <h2>Edit Review</h2>
+        <p>Modify the review details.</p>
+    </div>
+    
+    <div class="admin-nav">
+        <a th:href="@{/admin/dashboard}" class="admin-btn">Dashboard</a>
+        <a th:href="@{/admin/reviews}" class="admin-btn">Back to Reviews</a>
+    </div>
+    
+    <form th:action="@{/admin/reviews/update}" method="post">
+        <input type="hidden" name="reviewId" th:value="${reviewId}">
+        <input type="hidden" name="bookingId" th:value="${bookingId}">
+        <input type="hidden" name="username" th:value="${username}">
+        <input type="hidden" name="providerName" th:value="${providerName}">
+        
+        <div class="form-group">
+            <label>Customer:</label>
+            <div class="form-control" style="background-color: #f5f5f5;" th:text="${username}">Username</div>
+        </div>
+        
+        <div class="form-group">
+            <label>Provider:</label>
+            <div class="form-control" style="background-color: #f5f5f5;" th:text="${providerName}">Provider Name</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="rating">Rating:</label>
+            <div class="rating-container">
+                <select id="rating" name="rating" class="form-control" style="width: auto;" required>
+                    <option value="1" th:selected="${rating == 1}">1</option>
+                    <option value="2" th:selected="${rating == 2}">2</option>
+                    <option value="3" th:selected="${rating == 3}">3</option>
+                    <option value="4" th:selected="${rating == 4}">4</option>
+                    <option value="5" th:selected="${rating == 5}">5</option>
+                </select>
+                <span class="rating-star">★</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="comment">Comment:</label>
+            <textarea id="comment" name="comment" class="form-control" required th:text="${comment}">Review comment</textarea>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Update Review</button>
+            <a th:href="@{/admin/reviews}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

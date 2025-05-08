@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Manage Reviews</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #4caf50;
+            --accent-color: #8bc34a;
+            --text-color: #333;
+            --light-color: #f1f8e9;
+        }
+        
+        .admin-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .admin-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .admin-btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .admin-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .admin-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .admin-table tr:nth-child(even) {
+            background-color: var(--light-color);
+        }
+        
+        .btn-small {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .btn-small:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-delete {
+            background-color: #f44336;
+        }
+        
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
+        .rating {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .comment {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="admin-header">
+        <h2>Manage Reviews</h2>
+        <p>Edit and delete customer reviews.</p>
+    </div>
+    
+    <div class="admin-nav">
+        <a th:href="@{/admin/dashboard}" class="admin-btn">Dashboard</a>
+        <a th:href="@{/admin/users}" class="admin-btn">Manage Users</a>
+        <a th:href="@{/admin/providers}" class="admin-btn">Manage Providers</a>
+        <a th:href="@{/admin/bookings}" class="admin-btn">Manage Bookings</a>
+        <a th:href="@{/admin/packages}" class="admin-btn">Manage Packages</a>
+        <a th:href="@{/admin/reviews}" class="admin-btn">Manage Reviews</a>
+        <a th:href="@{/logout}" class="admin-btn" style="margin-left: auto;">Logout</a>
+    </div>
+    
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+    
+    <!-- Reviews Table -->
+    <table class="admin-table">
+        <tr>
+            <th>Review ID</th>
+            <th>Booking ID</th>
+            <th>Customer</th>
+            <th>Provider</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.reviewId}">ID</td>
+            <td th:text="${review.bookingId}">Booking ID</td>
+            <td th:text="${review.username}">User</td>
+            <td th:text="${review.providerName}">Provider</td>
+            <td class="rating" th:text="${review.rating + ' ★'}">5 ★</td>
+            <td class="comment" th:text="${review.comment}" th:title="${review.comment}">Comment</td>
+            <td th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy')}">Date</td>
+            <td>
+                <a th:href="@{/admin/reviews/edit/{id}(id=${review.reviewId})}" class="btn-small">Edit</a>
+                <a th:href="@{/admin/reviews/delete/{id}(id=${review.reviewId})}" class="btn-small btn-delete" 
+                   onclick="return confirm('Are you sure you want to delete this review?')">Delete</a>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
