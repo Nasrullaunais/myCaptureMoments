@@ -1,4 +1,4 @@
-package com.eventBooking.models;
+package com.eventBooking.models.users;
 
 
 public class User {

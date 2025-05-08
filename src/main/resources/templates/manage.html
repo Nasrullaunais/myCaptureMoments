@@ -1,15 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Manage Bookings</title>
-<link rel="stylesheet" th:href="@{/css/style.css}"></head>
-<body><div class="container"><h2>Your Bookings</h2>
-<table><tr><th>Provider</th><th>Date</th><th>Status</th><th>Action</th></tr>
-<tr th:each="booking : ${bookings}">
-<td th:text="${booking.providerName}">Provider</td>
-<td th:text="${booking.eventDate}">Date</td>
-<td th:text="${booking.status}">Status</td>
-<td><form th:action="@{/bookings/cancel}" method="post">
-<input type="hidden" name="providerName" th:value="${booking.providerName}">
-<button type="submit">Cancel</button></form></td>
-</tr></table>
-</div></body></html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Bookings</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h2>Your Bookings</h2>
+
+        <div th:if="${param.reviewSubmitted}" class="alert alert-success">
+            Thank you for your review!
+        </div>
+
+        <table>
+            <tr>
+                <th>Provider</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.providerName}">Provider</td>
+                <td th:text="${booking.eventDate}">Date</td>
+                <td th:text="${booking.status}">Status</td>
+                <td>
+                    <!-- Show Cancel button for pending bookings -->
+                    <form th:if="${booking.status == 'pending'}" th:action="@{/bookings/cancel/{id}(id=${booking.bookingId})}" method="get">
+                        <button type="submit">Cancel</button>
+                    </form>
+
+                    <!-- Show Review button for completed bookings -->
+                    <a th:if="${booking.status == 'completed'}" th:href="@{/reviews/create/{id}(id=${booking.bookingId})}" class="button">
+                        Leave Review
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

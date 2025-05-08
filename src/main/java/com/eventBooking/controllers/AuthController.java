@@ -1,7 +1,8 @@
 package com.eventBooking.controllers;
 
-import com.eventBooking.models.Booking;
-import com.eventBooking.models.User;
+import com.eventBooking.models.booking.Booking;
+import com.eventBooking.models.users.User;
+import com.eventBooking.services.AdminService;
 import com.eventBooking.services.BookingService;
 import com.eventBooking.services.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import java.util.List;
 public class AuthController {
     private final UserService userService = new UserService();
     private final BookingService bookingService = new BookingService();
+    private final AdminService adminService = new AdminService();
 
     @GetMapping("/")
     public String home() {
@@ -28,18 +30,34 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/admin/login")
+    public String adminLogin(Model model) {
+        model.addAttribute("error", false);
+        return "admin-login";
+    }
+
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
                         HttpSession session, Model model) {
 
-
-        if(userService.validateLogin(username, password)) {
+        // First check if it's an admin login
+        if(adminService.validateAdminLogin(username, password)) {
+            session.setAttribute("username", username);
+            session.setAttribute("password", password);
+            session.setAttribute("role", "admin");
+            model.addAttribute("error", false);
+            return "admin-dashboard";
+        }
+        // Then check if it's a regular user login
+        else if(userService.validateLogin(username, password)) {
             session.setAttribute("username", username);
             session.setAttribute("password", password);
             model.addAttribute("error", false);
 
-            if(username.equals("admin") && password.equals("12345")) {
+            // Check if the user has admin role in users.txt
+            User user = userService.getUserByUsername(username);
+            if(user != null && user.getEmail().equals("admin")) {
                 session.setAttribute("role", "admin");
                 return "admin-dashboard";
             }

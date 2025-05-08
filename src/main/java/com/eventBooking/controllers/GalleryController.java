@@ -1,7 +1,7 @@
 package com.eventBooking.controllers;
 
-import com.eventBooking.models.Photographer;
-import com.eventBooking.services.PhotographerService;
+import com.eventBooking.models.provider.Provider;
+import com.eventBooking.services.ProviderService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +13,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/gallery")
 public class GalleryController {
-    PhotographerService photographerService = new PhotographerService();
+    ProviderService providerService = new ProviderService();
     /**
      * Returns the gallery page with all photographers.
      * @param model Spring MVC model to pass data to the view
@@ -27,7 +27,7 @@ public class GalleryController {
             return "login";
         }
         // Get all photographers from the database
-        List<Photographer> providers = photographerService.getAllPhotographers();
+        List<Provider> providers = providerService.getAllProviders();
         // Pass the list of providers to the view
         model.addAttribute("providers", providers);
         // Return the gallery page

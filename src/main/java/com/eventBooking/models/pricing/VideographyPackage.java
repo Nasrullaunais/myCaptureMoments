@@ -1,0 +1,26 @@
+package com.eventBooking.models.pricing;
+
+
+public class VideographyPackage extends Package {
+    private int maxVideoDuration;
+
+    public int getMaxVideoDuration() { return maxVideoDuration; }
+
+    public void setMaxVideoDuration(int maxVideoDuration) {
+        this.maxVideoDuration = maxVideoDuration;
+    }
+
+    public VideographyPackage(String name, int price, int duration, int maxVideoDuration) {
+        super(name, price, duration);
+        this.maxVideoDuration = maxVideoDuration;
+    }
+
+    public String toFileString() {
+        return super.toFileString() + "," + maxVideoDuration;
+    }
+
+    public static VideographyPackage fromFileString(String line) {
+        String[] parts = line.split(",");
+        return new VideographyPackage(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+    }
+}

@@ -41,7 +41,10 @@
     <section class="about">
         <h2>Your Memories, Our Passion</h2>
         <p>At Capture Moments, we connect you with the best photography professionals for weddings, corporate events, birthdays, and more. Our easy booking system ensures you get the perfect photographer for your special occasion.</p>
-        <a th:href="@{/gallery}" class="btn btn-primary">Browse Providers</a>
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+            <a th:href="@{/gallery}" class="btn btn-primary">Browse Providers</a>
+            <a th:href="@{/packages}" class="btn btn-primary">View Packages</a>
+        </div>
     </section>
 
     <section class="testimonials">
@@ -57,12 +60,23 @@
         <a th:href="@{/about}">About Us</a>
         <a th:href="@{/contact}">Contact</a>
         <a th:href="@{/privacy}">Privacy Policy</a>
+        <a th:href="@{/admin/login}" class="admin-link">Admin Portal</a>
     </div>
         <div class="social-links">
             <a href="#" title="Social Media">📱</a>
             <a href="#" title="Website/Portfolio">💻</a>
             <a href="#" title="Email">📧</a>
         </div>
+        <style>
+            .admin-link {
+                margin-left: 10px;
+                color: #2e7d32;
+                font-weight: bold;
+            }
+            .admin-link:hover {
+                text-decoration: underline;
+            }
+        </style>
     </footer>
 </div>
 </body>

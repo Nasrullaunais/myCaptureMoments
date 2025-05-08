@@ -1,9 +1,9 @@
 package com.eventBooking.controllers;
 
 
-import com.eventBooking.models.Booking;
-import com.eventBooking.models.Photographer;
-import com.eventBooking.services.PhotographerService;
+import com.eventBooking.models.booking.Booking;
+import com.eventBooking.models.provider.Provider;
+import com.eventBooking.services.ProviderService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService = new BookingService();
-    private final PhotographerService photographerService = new PhotographerService();
+    private final ProviderService providerService = new ProviderService();
 
     @GetMapping("/new")
     public String showBookingForm(Model model, HttpSession session) {
@@ -27,14 +27,13 @@ public class BookingController {
             return "login";
         }
 
-        List<Photographer> providers = photographerService.getAllPhotographers();
+        List<Provider> providers = providerService.getAllProviders();
         model.addAttribute("providers", providers);
         return "booking";
     }
 
     @PostMapping("/create")
-    public String createBooking(@RequestParam String bookingId,
-                                @RequestParam String providerName,
+    public String createBooking(@RequestParam String providerName,
                                 @RequestParam String eventDate,
                                 @RequestParam String location,
                                 @RequestParam String type,
@@ -44,9 +43,8 @@ public class BookingController {
             return "login";
         }
 
-        Booking booking = new Booking(bookingId, username, providerName, eventDate, location, type, "pending");
+        Booking booking = new Booking(username, providerName, eventDate, location, type, "pending");
         bookingService.createBooking(booking);
-
         return "booking";
     }
 
