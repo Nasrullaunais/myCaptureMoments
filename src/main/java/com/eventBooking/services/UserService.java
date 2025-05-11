@@ -21,6 +21,7 @@ public class UserService {
             }
         } catch (IOException e) {
             logger.error("Error reading users.txt: {}", e.getMessage());
+            System.out.println(new File("data/users.txt").getAbsolutePath());
         }
         return users;
     }

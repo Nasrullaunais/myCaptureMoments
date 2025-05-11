@@ -24,6 +24,11 @@ public class AuthController {
         return "index";
     }
 
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
+
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("error", false);

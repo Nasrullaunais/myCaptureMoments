@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.eventBooking.services.BookingService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class BookingController {
                                 @RequestParam String eventDate,
                                 @RequestParam String location,
                                 @RequestParam String type,
+                                Model model,
                                 HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
@@ -44,8 +46,8 @@ public class BookingController {
         }
 
         Booking booking = new Booking(username, providerName, eventDate, location, type, "pending");
-        bookingService.createBooking(booking);
-        return "booking";
+        boolean success = bookingService.createBooking(booking);
+        return "dashboard";
     }
 
     @GetMapping("/manage")
@@ -68,8 +70,12 @@ public class BookingController {
             return "login";
         }
 
-        List<Booking> userBookings = bookingService.getBookingsByUser(username);
-        session.setAttribute("userBookings", userBookings);
+        Booking booking = bookingService.getBookingById(bookingId, username);
+        if (booking == null) {
+            // Optionally add an error message or redirect
+            return "errorPage"; // or show a 404/unauthorized page
+        }
+        model.addAttribute("booking", booking);
         return "bookingDetails";
     }
 
@@ -82,6 +88,11 @@ public class BookingController {
         bookingService.deleteBooking(username, bookingId);
         model.addAttribute("message", "Booking cancelled successfully");
         return "manage";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
     }
 
 }

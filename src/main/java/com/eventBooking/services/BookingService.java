@@ -3,31 +3,49 @@ package com.eventBooking.services;
 import com.eventBooking.models.booking.Booking;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BookingService {
     private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
     private static final String BOOKING_FILE = "data/bookings.txt";
+    private final Queue<Booking> bookingQueue = new LinkedList<>();
 
-    public List<Booking> getAllBookings() {
-        List<Booking> list = new ArrayList<>();
+    public BookingService() {
+        loadBookingsToQueue();
+    }
+
+    private void loadBookingsToQueue() {
         try (BufferedReader reader = new BufferedReader(new FileReader(BOOKING_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                list.add(Booking.fromFileString(line));
+                Booking booking = Booking.fromFileString(line);
+                bookingQueue.add(booking);
             }
         } catch (IOException e) {
-            logger.error("Error reading bookings.txt: {}", e.getMessage());
+            logger.error("Error loading bookings into queue: {}", e.getMessage());
         }
-        return list;
+    }
+
+    private void saveQueueToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKING_FILE))) {
+            for (Booking b : bookingQueue) {
+                writer.write(b.toFileString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            logger.error("Error saving queue to bookings.txt: {}", e.getMessage());
+        }
+    }
+
+    public List<Booking> getAllBookings() {
+        return new ArrayList<>(bookingQueue);
     }
 
     public List<Booking> getBookingsByUser(String username) {
         List<Booking> userBookings = new ArrayList<>();
-        for (Booking b : getAllBookings()) {
+        for (Booking b : bookingQueue) {
             if (b.getUsername().equals(username)) {
                 userBookings.add(b);
             }
@@ -35,84 +53,56 @@ public class BookingService {
         return userBookings;
     }
 
-    public boolean createBooking(Booking booking) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKING_FILE, true))) {
-            writer.write(booking.toFileString());
-            writer.newLine();
-            return true;
-        } catch (IOException e) {
-            logger.error("Error writing to bookings.txt: {}", e.getMessage());
-            return false;
+    public Booking getBookingById(String bookingId, String username){
+        for(Booking b : getBookingsByUser(username)) {
+            if (b.getBookingId().equals(bookingId)) {
+                return b;
+            }
         }
+        return null;
+    }
+
+    public boolean createBooking(Booking booking) {
+        bookingQueue.add(booking); // Enqueue the new booking
+        saveQueueToFile();
+        return true;
     }
 
     public void updateBookingStatus(String username, String providerName, String newStatus) {
-        List<Booking> updatedList = new ArrayList<>();
-        boolean updated = false;
-        for (Booking b : getAllBookings()) {
+        for (Booking b : bookingQueue) {
             if (b.getUsername().equals(username) && b.getProviderName().equals(providerName)) {
                 b.setStatus(newStatus);
-                updated = true;
-            }
-            updatedList.add(b);
-        }
-
-        if (updated) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKING_FILE))) {
-                for (Booking b : updatedList) {
-                    writer.write(b.toFileString());
-                    writer.newLine();
-                }
-            } catch (IOException e) {
-                logger.error("Error updating bookings.txt: {}", e.getMessage());
             }
         }
+        saveQueueToFile();
     }
 
     public void completeBooking(String bookingId) {
-        List<Booking> updatedList = new ArrayList<>();
-        boolean updated = false;
-        for (Booking b : getAllBookings()) {
+        for (Booking b : bookingQueue) {
             if (b.getBookingId().equals(bookingId)) {
                 b.setStatus("completed");
-                updated = true;
-            }
-            updatedList.add(b);
-        }
-
-        if (updated) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKING_FILE))) {
-                for (Booking b : updatedList) {
-                    writer.write(b.toFileString());
-                    writer.newLine();
-                }
-            } catch (IOException e) {
-                logger.error("Error updating bookings.txt: {}", e.getMessage());
             }
         }
+        saveQueueToFile();
     }
 
     public void deleteBooking(String username, String bookingId) {
-        List<Booking> updatedList = new ArrayList<>();
+        Iterator<Booking> iterator = bookingQueue.iterator();
         boolean removed = false;
-        for (Booking b : getAllBookings()) {
+
+        while (iterator.hasNext()) {
+            Booking b = iterator.next();
             if (b.getUsername().equals(username) && b.getBookingId().equals(bookingId)) {
+                iterator.remove(); // Dequeue the matched booking
                 removed = true;
-                continue;
+                break;
             }
-            updatedList.add(b);
         }
 
         if (removed) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKING_FILE))) {
-                for (Booking b : updatedList) {
-                    writer.write(b.toFileString());
-                    writer.newLine();
-                }
-            } catch (IOException e) {
-                logger.error("Error deleting booking from bookings.txt: {}", e.getMessage());
-            }
+            saveQueueToFile();
         }
-
     }
+
+
 }
