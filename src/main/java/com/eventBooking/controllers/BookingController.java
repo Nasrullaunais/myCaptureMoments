@@ -49,7 +49,7 @@ public class BookingController {
 
         Booking booking = new Booking(username, providerName, eventDate, location, type, "pending");
         boolean success = bookingService.createBooking(booking);
-        return "redirect:/booking/success";
+        return "booking/success";
     }
 
     @GetMapping("/success")

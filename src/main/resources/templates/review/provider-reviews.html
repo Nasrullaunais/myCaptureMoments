@@ -1,94 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provider Reviews</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .reviews-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .review-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-        }
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .review-author {
-            font-weight: bold;
-        }
-        .review-date {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .review-rating {
-            color: #FFD700;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-        .review-content {
-            line-height: 1.5;
-        }
-        .average-rating {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .star {
-            color: #FFD700;
-        }
-        .no-reviews {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-        .back-link {
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/review/provider-reviews.css}">
 </head>
 <body>
-    <div class="container">
-        <h2>Reviews for <span th:text="${providerName}">Provider</span></h2>
-        
-        <div class="average-rating">
-            Average Rating: 
-            <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</span>
-            <span class="star">★</span>
+<div class="container">
+    <h2>Reviews for <span class="provider-name-highlight" th:text="${providerName}">Provider Name</span></h2>
+
+    <div class="average-rating-section">
+        <div class="average-rating-value">
+            Average Rating:
+            <span class="rating-score" th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</span>
+            <span class="star-icon average-star">&#9733;</span>
+        </div>
+        <div class="total-reviews-count">
             (<span th:text="${reviews.size()}">0</span> reviews)
         </div>
-        
-        <div class="reviews-container">
-            <div th:if="${reviews.isEmpty()}" class="no-reviews">
-                No reviews yet for this provider.
-            </div>
-            
-            <div th:each="review : ${reviews}" class="review-card">
-                <div class="review-header">
+    </div>
+
+    <div class="reviews-list-container">
+        <div th:if="${reviews.isEmpty()}" class="no-reviews-message">
+            <p>It looks like <span th:text="${providerName}">this provider</span> hasn't received any reviews yet.</p>
+            <p>Be the first to share your experience!</p>
+        </div>
+
+        <div th:each="review : ${reviews}" class="review-card">
+            <div class="review-card-header">
+                <div class="review-author-avatar">
+                    <span th:text="${#strings.substring(review.username, 0, 1)}">U</span>
+                </div>
+                <div class="review-author-details">
                     <div class="review-author" th:text="${review.username}">Username</div>
                     <div class="review-date" th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy')}">Date</div>
                 </div>
-                <div class="review-rating">
-                    <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
-                </div>
-                <div class="review-content" th:text="${review.comment}">
-                    Review content goes here.
+                <div class="review-card-rating">
+                    <span th:each="i : ${#numbers.sequence(1, review.rating)}" class="star-icon filled-star">&#9733;</span>
+                    <span th:each="i : ${#numbers.sequence(review.rating + 1, 5)}" class="star-icon empty-star">&#9734;</span>
                 </div>
             </div>
-        </div>
-        
-        <div class="back-link">
-            <a th:href="@{/bookings/new}">Back to Booking</a>
+            <div class="review-content">
+                <p th:text="${review.comment}">
+                    Review content goes here. This is an example of a review comment that might be a bit longer to see how the text wraps and fits within the card.
+                </p>
+            </div>
         </div>
     </div>
+
+    <div class="back-link-container">
+        <a th:href="@{/bookings/new}" class="button button-secondary">&larr; Back to Booking</a>
+    </div>
+</div>
 </body>
 </html>

@@ -145,21 +145,18 @@ public class AdminController {
     }
 
     @PostMapping("/add-provider")
-    public String addProvider(@RequestParam String providerName, @RequestParam String speciality, @RequestParam int rating, 
-                             @RequestParam(required = false) String providerType, HttpSession session) {
+    public String addProvider(@RequestParam String providerName, @RequestParam String speciality, @RequestParam int rating,
+                              @RequestParam Provider.ProviderType providerType, @RequestParam String resolution, HttpSession session) {
         if (!isAdmin(session)) return "user/login";
 
-        Provider provider = new Provider(providerName, speciality, rating);
+        Provider provider = new Provider(providerName, speciality, rating, resolution, providerType);
 
-        // Check if it's a photographer or videographer
-        if (providerType != null && providerType.equalsIgnoreCase("videographer")) {
-            providerService.addVideographer(provider);
-        } else {
-            providerService.addPhotographer(provider);
-        }
+        providerService.addProvider(provider);
 
         return "redirect:/admin/dashboard";
     }
+
+
 
     @PostMapping("/remove-provider")
     public String removeProvider(@RequestParam String providerName, HttpSession session) {
@@ -170,12 +167,33 @@ public class AdminController {
     }
 
 
+    // Add this method to your AdminController.java
+    @PostMapping("/bookings/complete/{bookingId}")
+    public String completeBookingAsAdmin(@PathVariable String bookingId, 
+                                         RedirectAttributes redirectAttributes, 
+                                         HttpSession session) {
+        if (!isAdmin(session)) { // Assuming you have an isAdmin() helper method
+            return "redirect:/user/login"; // Or your access denied page
+        }
 
+        try {
+            bookingService.completeBooking(bookingId); // bookingService should be injected
+            redirectAttributes.addFlashAttribute("successMessage", "Booking marked as completed successfully!");
+        } catch (Exception e) {
+            // Log the exception e
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to mark booking as completed: " + e.getMessage());
+        }
+        return "redirect:/admin/bookings"; // Or the relevant admin page
+    }
 
-
+    // Ensure you have a helper method like this or similar logic for checking admin role
     private boolean isAdmin(HttpSession session) {
-        String role = (String) session.getAttribute("role");
-        return role != null && role.equalsIgnoreCase("admin");
+        // Your logic to check if the logged-in user is an admin
+        // For example, checking a session attribute:
+        // return "admin".equals(session.getAttribute("userRole"));
+        // This is just a placeholder, implement based on your authentication setup.
+        String userRole = (String) session.getAttribute("userRole");
+        return "ADMIN".equalsIgnoreCase(userRole) || "admin".equals(session.getAttribute("username")); // Adjust as per your role management
     }
 
     // User management methods

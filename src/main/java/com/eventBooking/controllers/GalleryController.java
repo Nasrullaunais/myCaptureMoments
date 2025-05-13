@@ -28,8 +28,16 @@ public class GalleryController {
         }
         // Get all photographers from the database
         List<Provider> providers = providerService.getAllProviders();
+        List<Provider> sortedProviders = providerService.getAllProvidersSortedByRating();
+        List<Provider> sortedProvidersReverse = providerService.getAllProvidersSortedByRatingAscending();
+
+
         // Pass the list of providers to the view
         model.addAttribute("providers", providers);
+        model.addAttribute("sortedProviders", sortedProviders);
+        model.addAttribute("sortedProvidersReverse", sortedProvidersReverse);
+
+
         // Return gallery page
         return "provider/gallery";
     }

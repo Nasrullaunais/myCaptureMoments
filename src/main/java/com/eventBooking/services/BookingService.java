@@ -121,12 +121,25 @@ public class BookingService {
     }
 
     public void completeBooking(String bookingId) {
-        for (Booking b : bookingQueue) {
+        // If you load bookings on demand, you might need to load them first:
+        // loadBookingsFromFile(); // Or however you refresh your bookingQueue if it's not always live
+
+        Booking bookingToComplete = null;
+        for (Booking b : bookingQueue) { // Assuming bookingQueue is your List<Booking>
             if (b.getBookingId().equals(bookingId)) {
-                b.setStatus("completed");
+                bookingToComplete = b;
+                break;
             }
         }
-        saveQueueToFile();
+
+        if (bookingToComplete != null) {
+            bookingToComplete.setStatus("completed"); // Use the setStatus method from Booking.java
+            saveQueueToFile(); // Persist the changes
+            // logger.info("Booking {} marked as completed.", bookingId);
+        } else {
+            // logger.warn("Attempted to complete non-existent booking with ID: {}", bookingId);
+            throw new RuntimeException("Booking not found with ID: " + bookingId + ". Cannot mark as completed.");
+        }
     }
 
     public void deleteBooking(String username, String bookingId) {
@@ -146,6 +159,14 @@ public class BookingService {
             saveQueueToFile();
         }
     }
+
+    public Optional<Booking> findBookingById(String bookingId) {
+        // loadQueueFromFile(); // Uncomment if your bookingQueue is not always live
+        return bookingQueue.stream()
+                .filter(booking -> booking.getBookingId().equals(bookingId))
+                .findFirst();
+    }
+
 
 
 }
