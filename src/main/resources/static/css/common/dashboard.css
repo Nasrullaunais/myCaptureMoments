@@ -227,23 +227,23 @@ body, html {
 
 /* Specific Card Backgrounds */
 .card-new-booking {
-    background-image: url('../img/image2.jpg');
+    background-image: url('../../img/image2.jpg');
 }
 
 .card-manage-bookings {
-    background-image: url('../img/image1.jpg');
+    background-image: url('../../img/image1.jpg');
 }
 
 .card-gallery {
-    background-image: url('../img/image3.jpg');
+    background-image: url('../../img/image3.jpg');
 }
 
 .card-upcoming {
-    background-image: url('../img/image5.jpg');
+    background-image: url('../../img/image5.jpg');
 }
 
 .card-about {
-    background-image: url('../img/image4.jpg');
+    background-image: url('../../img/image4.jpg');
 }
 
 /* About Section */

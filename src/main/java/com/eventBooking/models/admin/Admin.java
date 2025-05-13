@@ -1,4 +1,6 @@
-package com.eventBooking.models.users;
+package com.eventBooking.models.admin;
+
+import com.eventBooking.models.user.User;
 
 public class Admin extends User {
 

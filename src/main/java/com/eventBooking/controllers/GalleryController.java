@@ -24,13 +24,13 @@ public class GalleryController {
     public String gallery(Model model, HttpSession session) {
         // Check if the user is logged in
         if (session.getAttribute("username") == null) {
-            return "login";
+            return "user/login";
         }
         // Get all photographers from the database
         List<Provider> providers = providerService.getAllProviders();
         // Pass the list of providers to the view
         model.addAttribute("providers", providers);
-        // Return the gallery page
-        return "gallery";
+        // Return gallery page
+        return "provider/gallery";
     }
 }

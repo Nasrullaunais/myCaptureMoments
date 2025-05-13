@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/reviews")
@@ -48,7 +47,7 @@ public class ReviewController {
         }
 
         model.addAttribute("booking", booking);
-        return "review-form";
+        return "review/review-form";
     }
 
     @PostMapping("/submit")
@@ -82,6 +81,6 @@ public class ReviewController {
         model.addAttribute("reviews", reviews);
         model.addAttribute("averageRating", averageRating);
 
-        return "provider-reviews";
+        return "review/provider-reviews";
     }
 }

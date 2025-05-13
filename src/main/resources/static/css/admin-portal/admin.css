@@ -1,10 +1,10 @@
 /* base.css */
 :root {
     /* Color Palette (Adjusted based on image) */
-    --bg-dark: #0d190d;        /* Dark background */
-    --surface-dark: #132714;   /* Slightly lighter surface */
-    --primary-green: #4caf50; /* Primary green */
-    --primary-green-darker: #388e3c; /* Darker primary */
+    --bg-dark: #0f190f;        /* Dark background */
+    --surface-dark: #152716;   /* Slightly lighter surface */
+    --primary-green: #468348; /* Primary green */
+    --primary-green-darker: #2f6532; /* Darker primary */
     --accent-green: #8bc34a;    /* Accent green */
     --text-light: #f0f0f0;      /* Light text */
     --text-lighter: #e0e0e0;    /* Lighter text */
@@ -50,7 +50,7 @@ button {
 .admin-header {
     background-color: var(--surface-dark);
     padding: 25px;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 20px;
     box-shadow: 0 4px 6px var(--box-shadow);
     border-bottom: 2px solid var(--primary-green-darker);
@@ -70,7 +70,7 @@ button {
 .admin-nav {
     background-color: var(--surface-dark);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px var(--box-shadow);
     display: flex;
@@ -83,7 +83,7 @@ button {
     color: var(--text-light);
     padding: 10px 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     transition: background-color 0.3s, transform 0.2s;
     display: inline-block;
 }
@@ -98,7 +98,7 @@ button {
     border-collapse: collapse;
     margin-top: 20px;
     background-color: var(--surface-dark);
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 6px var(--box-shadow);
 }
@@ -155,7 +155,7 @@ button {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--border-dark);
-    border-radius: 4px;
+    border-radius: 8px;
     background-color: var(--bg-dark);
     color: var(--text-light);
     box-sizing: border-box;
@@ -172,7 +172,7 @@ button {
     color: var(--text-light);
     padding: 10px 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
 }
@@ -187,7 +187,7 @@ button {
     color: var(--text-lighter);
     border: 1px solid var(--border-dark);
     padding: 10px 15px;
-    border-radius: 5px;
+    border-radius: 8px;
     transition: color 0.3s, border-color 0.3s;
 }
 

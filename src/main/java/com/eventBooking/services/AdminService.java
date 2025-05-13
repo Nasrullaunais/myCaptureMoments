@@ -1,6 +1,6 @@
 package com.eventBooking.services;
 
-import com.eventBooking.models.users.Admin;
+import com.eventBooking.models.admin.Admin;
 
 import java.io.*;
 import java.util.ArrayList;

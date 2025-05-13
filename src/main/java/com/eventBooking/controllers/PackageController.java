@@ -28,7 +28,7 @@ public class PackageController {
         model.addAttribute("photoPackages", photoPackages);
         model.addAttribute("videoPackages", videoPackages);
 
-        return "packages";
+        return "package/packages";
     }
 
     // User view - View package details
@@ -48,7 +48,7 @@ public class PackageController {
                 model.addAttribute("videoPackage", (VideographyPackage) pkg);
             }
 
-            return "package-details";
+            return "package/package-details";
         } else {
             return "redirect:/packages";
         }

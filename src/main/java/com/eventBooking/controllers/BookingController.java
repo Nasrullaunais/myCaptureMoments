@@ -28,12 +28,12 @@ public class BookingController {
     @GetMapping("/new")
     public String showBookingForm(Model model, HttpSession session) {
         if (session.getAttribute("username") == null) {
-            return "login";
+            return "user/login";
         }
 
         List<Provider> providers = providerService.getAllProviders();
         model.addAttribute("providers", providers);
-        return "booking";
+        return "booking/booking";
     }
 
     @PostMapping("/create")
@@ -44,7 +44,7 @@ public class BookingController {
                                 HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return "login";
+            return "user/login";
         }
 
         Booking booking = new Booking(username, providerName, eventDate, location, type, "pending");
@@ -54,19 +54,19 @@ public class BookingController {
 
     @GetMapping("/success")
     public String success(){
-        return "success";
+        return "booking/success";
     }
 
     @GetMapping("/manage")
     public String viewBookings(Model model, HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return "login";
+            return "user/login";
         }
 
         List<Booking> bookings = bookingService.getBookingsByUser(username);
         model.addAttribute("bookings", bookings);
-        return "manage";
+        return "booking/manage";
     }
 
 
@@ -84,14 +84,15 @@ public class BookingController {
         Booking booking = bookingService.getBookingById(bookingId, username);
 
     model.addAttribute("booking", booking);
-    return "bookingDetails";
+    redirectAttributes.addFlashAttribute("booking", booking);
+    return "booking/bookingDetails";
 }
 
     @GetMapping("/cancel/{bookingId}")
     public String cancelBooking(@PathVariable String bookingId, HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return "login";
+            return "user/login";
         }
         bookingService.deleteBooking(username, bookingId);
         model.addAttribute("message", "Booking cancelled successfully");
@@ -100,7 +101,7 @@ public class BookingController {
 
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "dashboard";
+        return "common/dashboard";
     }
 
 }

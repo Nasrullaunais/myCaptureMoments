@@ -13,14 +13,12 @@ import jakarta.servlet.http.HttpSession;
 import com.eventBooking.models.booking.Booking;
 import com.eventBooking.services.BookingService;
 import com.eventBooking.models.provider.Provider;
-import com.eventBooking.models.provider.Photographer;
-import com.eventBooking.models.provider.Videographer;
 import com.eventBooking.services.ProviderService;
 import com.eventBooking.models.pricing.Package;
 import com.eventBooking.models.pricing.PhotographyPackage;
 import com.eventBooking.models.pricing.VideographyPackage;
 import com.eventBooking.services.PackageService;
-import com.eventBooking.models.users.User;
+import com.eventBooking.models.user.User;
 import com.eventBooking.services.UserService;
 import com.eventBooking.models.review.Review;
 import com.eventBooking.services.ReviewService;
@@ -40,31 +38,32 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         List<Booking> bookings = bookingService.getAllBookings();
         List<Provider> providers = providerService.getAllProviders();
         model.addAttribute("bookings", bookings);
         model.addAttribute("providers", providers);
 
-        return "admin-dashboard";
+        return "admin/admin-dashboard";
     }
 
     // Booking management methods
 
     @GetMapping("/bookings")
     public String adminBookings(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         List<Booking> bookings = bookingService.getAllBookings();
         model.addAttribute("bookings", bookings);
 
-        return "admin-bookings";
+        return "booking/admin-bookings";
+
     }
 
     @GetMapping("/bookings/create")
     public String showCreateBookingForm(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         List<User> users = userService.getAllUsers();
         List<Provider> providers = providerService.getAllProviders();
@@ -73,7 +72,7 @@ public class AdminController {
         model.addAttribute("providers", providers);
         model.addAttribute("isEdit", false);
 
-        return "booking-form";
+        return "booking/booking-form";
     }
 
     @PostMapping("/bookings/create")
@@ -86,7 +85,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         try {
             Booking booking = new Booking(username, providerName, eventDate, location, event, "pending");
@@ -110,7 +109,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         // Find the booking to get the username
         String username = "";
@@ -133,14 +132,14 @@ public class AdminController {
 
     @PostMapping("/confirm")
     public String confirm(@RequestParam String providerName, @RequestParam String username, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
         bookingService.updateBookingStatus(username, providerName, "confirmed");
         return "redirect:/admin/dashboard";
     }
 
     @PostMapping("/complete")
     public String complete(@RequestParam String bookingId, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
         bookingService.completeBooking(bookingId);
         return "redirect:/admin/dashboard";
     }
@@ -148,7 +147,7 @@ public class AdminController {
     @PostMapping("/add-provider")
     public String addProvider(@RequestParam String providerName, @RequestParam String speciality, @RequestParam int rating, 
                              @RequestParam(required = false) String providerType, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         Provider provider = new Provider(providerName, speciality, rating);
 
@@ -164,7 +163,7 @@ public class AdminController {
 
     @PostMapping("/remove-provider")
     public String removeProvider(@RequestParam String providerName, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         providerService.removeProvider(providerName);
         return "redirect:/admin/dashboard";
@@ -183,35 +182,35 @@ public class AdminController {
 
     @GetMapping("/providers")
     public String adminProviders(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         List<Provider> providers = providerService.getAllProviders();
         model.addAttribute("providers", providers);
 
-        return "admin-providers";
+        return "provider/admin-providers";
     }
 
     @GetMapping("/users")
     public String adminUsers(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
 
-        return "admin-users";
+        return "user/admin-users";
     }
 
     @GetMapping("/users/create")
     public String showCreateUserForm(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         model.addAttribute("isEdit", false);
-        return "user-form";
+        return "admin/user-form";
     }
 
     @GetMapping("/users/edit/{username}")
     public String showEditUserForm(@PathVariable String username, Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         User user = userService.getUserByUsername(username);
         if (user != null) {
@@ -219,7 +218,7 @@ public class AdminController {
             model.addAttribute("email", user.getEmail());
             model.addAttribute("isEdit", true);
 
-            return "user-form";
+            return "admin/user-form";
         } else {
             return "redirect:/admin/users";
         }
@@ -233,7 +232,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         try {
             User user = new User(username, password, email);
@@ -259,7 +258,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         try {
             User updatedUser = new User(username, password, email);
@@ -283,7 +282,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         boolean success = userService.deleteUser(username);
 
@@ -301,7 +300,7 @@ public class AdminController {
     // Admin view - List all packages for management
     @GetMapping("/packages")
     public String adminPackages(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         List<PhotographyPackage> photoPackages = packageService.getPhotographyPackages();
         List<VideographyPackage> videoPackages = packageService.getVideographyPackages();
@@ -309,22 +308,22 @@ public class AdminController {
         model.addAttribute("photoPackages", photoPackages);
         model.addAttribute("videoPackages", videoPackages);
 
-        return "admin-packages";
+        return "package/admin-packages";
     }
 
     // Admin view - Show form to create a new package
     @GetMapping("/packages/create")
     public String showCreateForm(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         model.addAttribute("isEdit", false);
-        return "package-form";
+        return "package/package-form";
     }
 
     // Admin view - Show form to edit an existing package
     @GetMapping("/packages/edit/{name}")
     public String showEditForm(@PathVariable String name, Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         Optional<Package> packageOpt = packageService.getPackageByName(name);
 
@@ -345,7 +344,7 @@ public class AdminController {
             model.addAttribute("isEdit", true);
             model.addAttribute("oldName", name);
 
-            return "package-form";
+            return "package/package-form";
         } else {
             return "redirect:/admin/packages";
         }
@@ -363,7 +362,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         try {
             if ("PHOTO".equals(packageType)) {
@@ -397,7 +396,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         try {
             if ("PHOTO".equals(packageType)) {
@@ -421,7 +420,7 @@ public class AdminController {
     // Admin action - Delete a package
     @GetMapping("/packages/delete/{name}")
     public String deletePackage(@PathVariable String name, RedirectAttributes redirectAttributes, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         boolean deleted = packageService.deletePackage(name);
 
@@ -438,17 +437,17 @@ public class AdminController {
 
     @GetMapping("/reviews")
     public String adminReviews(Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         List<Review> reviews = reviewService.getAllReviews();
         model.addAttribute("reviews", reviews);
 
-        return "admin-reviews";
+        return "review/admin-reviews";
     }
 
     @GetMapping("/reviews/edit/{reviewId}")
     public String showEditReviewForm(@PathVariable String reviewId, Model model, HttpSession session) {
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         Review review = null;
         for (Review r : reviewService.getAllReviews()) {
@@ -467,7 +466,7 @@ public class AdminController {
             model.addAttribute("comment", review.getComment());
             model.addAttribute("isEdit", true);
 
-            return "admin-review-form";
+            return "review/admin-review-form";
         } else {
             return "redirect:/admin/reviews";
         }
@@ -484,7 +483,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         try {
             // Find the original review to get its creation date
@@ -530,7 +529,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        if (!isAdmin(session)) return "login";
+        if (!isAdmin(session)) return "user/login";
 
         boolean success = reviewService.deleteReview(reviewId);
 
