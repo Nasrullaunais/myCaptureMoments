@@ -2,22 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/gallery.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<div class="container">
-    <h2>Photographer Gallery</h2>
-    <p>Explore available photographers and videographers.</p>
-    <table>
-        <tr><th>Name</th><th>Specialty</th><th>Rating</th><th>Action</th></tr>
-        <tr th:each="provider : ${providers}">
-            <td th:text="${provider.name}">Jane Doe</td>
-            <td th:text="${provider.specialty}">Weddings</td>
-            <td th:text="${provider.rating}">5</td>
-            <td><a th:href="@{'/bookings/new?provider=' + ${provider.name}}" class="btn">Book</a></td>
-        </tr>
-    </table>
+<div class="gallery-container">
+    <div class="gallery-header">
+        <h2 class="title">Photographer Gallery</h2>
+        <p class="subtitle">Explore our talented photographers and videographers</p>
+        <div class="search-bar">
+            <input type="text" placeholder="Search providers...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <div class="providers-grid">
+        <div class="provider-card" th:each="provider : ${providers}">
+            <div class="card-image">
+                <div class="rating-badge">
+                    <i class="fas fa-star"></i>
+                    <span th:text="${provider.rating}">5</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <h3 th:text="${provider.name}">Jane Doe</h3>
+                <p class="specialty" th:text="${provider.specialty}">Weddings</p>
+                <div class="sample-work">
+                    <div class="sample-thumbnail"></div>
+                    <div class="sample-thumbnail"></div>
+                    <div class="sample-thumbnail"></div>
+                </div>
+                <a th:href="@{'/bookings/new?provider=' + ${provider.name}}" class="book-btn">
+                    Book Now <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

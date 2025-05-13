@@ -1,4 +1,0 @@
-67b97948-b4ce-4e41-b73d-5863cca1bf62,leo,john,2025-05-14,new hamshire,wedding,pending
-f3ae114a-9770-41bd-8d8e-260ba75c4e3b,leo,Photographer1,2025-05-14,Colombo port city,Corperate,pending
-3dafa50c-685a-45ff-a831-3663122dc6cc,leo,Photographer1,2025-05-30,Jafna,Testing type,pending
-664e1682-ad20-4b70-bbfa-864bfdb3a4e8,leo,Videographer1,2025-06-05,Matara oluvil,birthday,pending

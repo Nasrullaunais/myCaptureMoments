@@ -49,7 +49,7 @@
             <!-- Expanded content (hidden when shrunken) -->
             <div class="card-content">
                 <h3 class="card-title">New Booking</h3>
-                <p class="card-description">Book a professional photographer or videographer for your next event.</p>
+                <p class="card-description">Book a professional photographer or videographer for your next eventTyple.</p>
                 <a th:href="@{/bookings/new}" class="btn btn-primary">Book Now</a>
             </div>
         </div>
@@ -107,21 +107,22 @@
     <section class="dashboard-section" id="upcoming">
         <h2 class="section-title">Upcoming Bookings</h2>
         <div class="bookings-grid">
-            <div th:each="booking : ${session.bookings}" class="booking-card">
+            <div th:each="booking : ${bookings}" class="booking-card">
                 <div class="booking-date">
                     <span class="day" th:text="${booking.formattedDate}">15 Jan 2025</span>
                 </div>
                 <div class="booking-details">
                     <h3 th:text="${'Photographer: ' +booking.providerName}">Sarah Johnson Photography</h3>
                     <p class="booking-time" th:text= "${'Booking Status: ' +booking.status}">Pending</p>
-                    <p class="booking-type" th:text="${'event: ' +booking.type}">Wedding</p>
+                    <p class="booking-type" th:text="${'eventTyple: ' +booking.eventType}">Wedding</p>
+                    <p class="booking-id" th:text="${'id: ' +booking.bookingId}">Wedding</p>
                 </div>
                 <div class="booking-actions">
                     <a th:href="@{'/bookings/' + ${booking.bookingId}}" class="btn btn-sm">Details</a>
                     <a th:href="@{'/bookings/' + ${booking.bookingId} + '/cancel'}" class="btn btn-sm btn-outline">Cancel</a>
                 </div>
             </div>
-            <div th:if="${#lists.isEmpty(session.bookings)}" class="no-bookings">
+            <div th:if="${#lists.isEmpty(bookings)}" class="no-bookings">
                 <p>No upcoming bookings. <a th:href="@{/bookings/new}">Book a session now!</a></p>
             </div>
         </div>

@@ -6,6 +6,9 @@ import com.eventBooking.services.AdminService;
 import com.eventBooking.services.BookingService;
 import com.eventBooking.services.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +21,7 @@ public class AuthController {
     private final UserService userService = new UserService();
     private final BookingService bookingService = new BookingService();
     private final AdminService adminService = new AdminService();
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @GetMapping("/")
     public String home() {
@@ -25,7 +29,11 @@ public class AuthController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard() {
+    public String dashboard(Model model, HttpSession session) {
+        String username = session.getAttribute("username").toString();
+
+        model.addAttribute("bookings", bookingService.getBookingsByUser(username));
+        logger.info("User booking fetched in /dashboard: {}", bookingService.getBookingsByUser(username));
         return "dashboard";
     }
 
@@ -68,9 +76,7 @@ public class AuthController {
             }
             else {
                 session.setAttribute("role", "user");
-                List<Booking> bookings = bookingService.getAllBookings();
-                session.setAttribute("bookings", bookings);
-                return "dashboard";
+                return "redirect:/dashboard";
             }
         }
         else {
@@ -115,7 +121,7 @@ public class AuthController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "index";
+        return "redirect:";
     }
 
 

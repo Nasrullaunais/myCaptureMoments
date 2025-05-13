@@ -14,18 +14,33 @@ public class Booking {
     private String providerName;
     private String eventDate;
     private String location;
-    private String event;
+    private String eventTyple;
     private String formattedDate;
 
     private String status; // pending, confirmed, completed
 
-    public Booking(String username, String providerName, String eventDate, String location, String event, String status) {
+    // Add new constructor that includes bookingId
+    public Booking(String bookingId, String username, String providerName, String eventDate,
+                   String location, String eventTyple, String status) {
+        this.bookingId = bookingId;  // Use the provided bookingId instead of generating new one
+        this.username = username;
+        this.providerName = providerName;
+        this.eventDate = eventDate;
+        this.location = location;
+        this.eventTyple = eventTyple;
+        this.status = status;
+        setFormattedDate();
+    }
+
+    // Keep existing constructor for new bookings
+    public Booking(String username, String providerName, String eventDate,
+                   String location, String eventTyple, String status) {
         this.bookingId = UUID.randomUUID().toString();
         this.username = username;
         this.providerName = providerName;
         this.eventDate = eventDate;
         this.location = location;
-        this.event = event;
+        this.eventTyple = eventTyple;
         this.status = status;
         setFormattedDate();
     }
@@ -56,7 +71,7 @@ public class Booking {
     public String getProviderName() { return providerName; }
     public String getEventDate() { return eventDate; }
     public String getLocation() { return location; }
-    public String getType() { return event; }
+    public String getEventType() { return eventTyple; }
     public String getStatus() { return status; }
 
     public void setStatus(String status) {
@@ -64,12 +79,12 @@ public class Booking {
     }
 
     public String toFileString() {
-        return bookingId + "," + username + "," + providerName + "," + eventDate + "," + location + "," + event + "," + status;
+        return bookingId + "," + username + "," + providerName + "," + eventDate + "," + location + "," + eventTyple + "," + status;
     }
 
     public static Booking fromFileString(String line) {
         String[] parts = line.split(",");
-        return new Booking(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
+        return new Booking(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
     }
 
     public String toString() {
@@ -79,7 +94,7 @@ public class Booking {
                 ", providerName='" + providerName + '\'' +
                 ", eventDate='" + eventDate + '\'' +
                 ", location='" + location + '\'' +
-                ", event='" + event + '\'' +
+                ", eventTyple='" + eventTyple + '\'' +
                 ", formattedDate='" + formattedDate + '\'' +
                 ", status='" + status + '\'' +
                 '}';
