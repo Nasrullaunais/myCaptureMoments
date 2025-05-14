@@ -4,11 +4,13 @@ import com.eventBooking.models.user.User;
 import com.eventBooking.services.AdminService;
 import com.eventBooking.services.BookingService;
 import com.eventBooking.services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 
 import org.springframework.stereotype.Controller;
 
@@ -25,10 +27,15 @@ public class AuthController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model, HttpSession session) {
+    public String dashboard(Model model, HttpSession session, HttpServletResponse response) {
         String username = session.getAttribute("username").toString();
         model.addAttribute("bookings", bookingService.getBookingsByUser(username));
         logger.info("User booking fetched in /dashboard: {}", bookingService.getBookingsByUser(username));
+
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+
         return "common/dashboard";
     }
 

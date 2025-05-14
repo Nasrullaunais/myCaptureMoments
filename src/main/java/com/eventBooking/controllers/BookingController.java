@@ -41,6 +41,7 @@ public class BookingController {
                                 @RequestParam String eventDate,
                                 @RequestParam String location,
                                 @RequestParam String type,
+                                Model model,
                                 HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
@@ -49,6 +50,8 @@ public class BookingController {
 
         Booking booking = new Booking(username, providerName, eventDate, location, type, "pending");
         boolean success = bookingService.createBooking(booking);
+        List<Booking> bookings = bookingService.getBookingsByUser(username);
+        model.addAttribute("bookings", bookings);
         return "booking/success";
     }
 
@@ -102,6 +105,18 @@ public class BookingController {
     @GetMapping("/dashboard")
     public String dashboard() {
         return "common/dashboard";
+    }
+
+    @GetMapping("/upcoming")
+    public String upcomingBookings(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return "user/login";
+        }
+
+        List<Booking> bookings = bookingService.getBookingsByUser(username);
+        model.addAttribute("bookings", bookings);
+        return "booking/upcoming-bookings";
     }
 
 }
