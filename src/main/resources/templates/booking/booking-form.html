@@ -3,95 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Booking</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/admin-portal/admin.css}">
-    <style>
-        :root {
-            --primary-color: #2e7d32;
-            --secondary-color: #4caf50;
-            --accent-color: #8bc34a;
-            --text-color: #333;
-            --light-color: #f1f8e9;
-        }
-
-        .admin-header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-        .admin-nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .admin-btn {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .admin-btn:hover {
-            background-color: var(--primary-color);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .form-actions {
-            margin-top: 20px;
-        }
-
-        .btn-submit {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn-submit:hover {
-            background-color: var(--primary-color);
-        }
-
-        .btn-cancel {
-            background-color: #f5f5f5;
-            color: #333;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-left: 10px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/booking/booking-form.css}">
 </head>
 <body>
 <div class="container">
     <div class="admin-header">
         <h2>Create New Booking</h2>
-        <p>Create a new eventTyple booking for a customer.</p>
+        <p>Fill in the details below to create a new event booking for a customer.</p>
     </div>
 
     <div class="admin-nav">
@@ -123,13 +41,13 @@
 
         <div class="form-group">
             <label for="location">Location:</label>
-            <input type="text" id="location" name="location" class="form-control" required>
+            <input type="text" id="location" name="location" class="form-control" placeholder="e.g., Grand Ballroom, City Park" required>
         </div>
 
         <div class="form-group">
             <label for="eventType">Event Type:</label>
             <select id="eventType" name="eventType" class="form-control" required>
-                <option value="">Select eventType type</option>
+                <option value="">Select event type</option>
                 <option value="Wedding">Wedding</option>
                 <option value="Birthday">Birthday</option>
                 <option value="Corporate">Corporate Event</option>
@@ -142,61 +60,76 @@
             <label for="packageName">Package:</label>
             <select id="packageName" name="packageName" class="form-control">
                 <option value="">No Package</option>
-                <option th:each="package : ${packages}" 
-                        th:value="${package.name}" 
+                <option th:each="package : ${packages}"
+                        th:value="${package.name}"
                         th:text="${package.name + ' - $' + package.price}"
                         th:attr="data-package-type=${package instanceof T(com.eventBooking.models.pricing.PhotographyPackage) ? 'PHOTOGRAPHER' : 'VIDEOGRAPHER'}">
                     Basic Package - $500
                 </option>
             </select>
-            <div id="packageMessage" style="color: red; margin-top: 5px; display: none;">
-                Please select a provider first
+            <div id="packageMessage" style="color: var(--danger-color); margin-top: 8px; display: none; font-size: 0.9em;">
+                Please select a provider first to see available packages.
             </div>
         </div>
 
         <script th:inline="javascript">
+            // Wait for the DOM to be fully loaded before executing the script
             document.addEventListener('DOMContentLoaded', function() {
+                // Get references to the provider and package select elements and the message div
                 var providerSelect = document.getElementById('providerName');
                 var packageSelect = document.getElementById('packageName');
                 var packageMessage = document.getElementById('packageMessage');
-                var allPackageOptions = Array.from(packageSelect.options).slice(1); // Skip the "No Package" option
 
-                // Initially disable package selection and show message
-                packageSelect.disabled = true;
-                packageMessage.style.display = 'block';
+                // Store all original package options (excluding the "No Package" default)
+                // This is important because we will filter and re-add them based on provider selection
+                var allPackageOptions = Array.from(packageSelect.options).slice(1);
 
-                providerSelect.addEventListener('change', function() {
-                    var selectedProvider = this.value;
+                // Function to update package options based on selected provider
+                function updatePackageOptions() {
+                    var selectedProviderValue = providerSelect.value;
 
-                    // Reset package dropdown
+                    // Clear current package options, keeping the "No Package" option
                     packageSelect.innerHTML = '<option value="">No Package</option>';
 
-                    if (selectedProvider) {
-                        // Enable package selection
-                        packageSelect.disabled = false;
-                        packageMessage.style.display = 'none';
+                    if (selectedProviderValue) {
+                        // A provider is selected
+                        packageSelect.disabled = false; // Enable the package dropdown
+                        packageMessage.style.display = 'none'; // Hide the instructional message
 
-                        // Get provider type
-                        var selectedOption = this.options[this.selectedIndex];
-                        var providerText = selectedOption.text;
+                        // Determine the type of the selected provider (PHOTOGRAPHER or VIDEOGRAPHER)
+                        var selectedProviderOption = providerSelect.options[providerSelect.selectedIndex];
+                        var providerText = selectedProviderOption.text; // e.g., "John Doe (Weddings) - PHOTOGRAPHER"
                         var isPhotographer = providerText.includes('PHOTOGRAPHER');
                         var isVideographer = providerText.includes('VIDEOGRAPHER');
 
-                        // Filter packages based on provider type
+                        // Filter and add relevant packages
                         allPackageOptions.forEach(function(option) {
-                            var packageType = option.getAttribute('data-package-type');
-
-                            if ((isPhotographer && packageType === 'PHOTOGRAPHER') || 
+                            var packageType = option.getAttribute('data-package-type'); // 'PHOTOGRAPHER' or 'VIDEOGRAPHER'
+                            // Add package if its type matches the provider's type
+                            if ((isPhotographer && packageType === 'PHOTOGRAPHER') ||
                                 (isVideographer && packageType === 'VIDEOGRAPHER')) {
-                                packageSelect.appendChild(option.cloneNode(true));
+                                packageSelect.appendChild(option.cloneNode(true)); // Add a copy of the option
                             }
                         });
                     } else {
-                        // Disable package selection and show message
-                        packageSelect.disabled = true;
-                        packageMessage.style.display = 'block';
+                        // No provider is selected
+                        packageSelect.disabled = true; // Disable the package dropdown
+                        packageMessage.style.display = 'block'; // Show the instructional message
                     }
-                });
+                }
+
+                // Initially, disable package selection and show message
+                packageSelect.disabled = true;
+                packageMessage.style.display = 'block';
+                packageMessage.textContent = 'Please select a provider first to see available packages.';
+
+
+                // Add an event listener to the provider select element
+                // This will trigger the updatePackageOptions function whenever the provider selection changes
+                providerSelect.addEventListener('change', updatePackageOptions);
+
+                // Call it once initially in case a provider is pre-selected (e.g. on form error re-population)
+                // updatePackageOptions(); // Not strictly necessary if form always starts blank, but good practice.
             });
         </script>
 
