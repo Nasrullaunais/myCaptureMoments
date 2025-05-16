@@ -67,9 +67,11 @@ public class AdminController {
 
         List<User> users = userService.getAllUsers();
         List<Provider> providers = providerService.getAllProviders();
+        List<Package> packages = packageService.getAllPackages();
 
         model.addAttribute("users", users);
         model.addAttribute("providers", providers);
+        model.addAttribute("packages", packages);
         model.addAttribute("isEdit", false);
 
         return "booking/booking-form";
@@ -81,14 +83,29 @@ public class AdminController {
             @RequestParam String providerName,
             @RequestParam String eventDate,
             @RequestParam String location,
-            @RequestParam String event,
+            @RequestParam String eventTyple,
+            @RequestParam(required = false) String packageName,
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
         if (!isAdmin(session)) return "user/login";
 
         try {
-            Booking booking = new Booking(username, providerName, eventDate, location, event, "pending");
+            Booking booking;
+
+            if (packageName != null && !packageName.isEmpty()) {
+                // Get the package details
+                Package selectedPackage = packageService.getPackageByName(packageName).orElse(null);
+                if (selectedPackage != null) {
+                    booking = new Booking(username, providerName, eventDate, location, eventTyple, "pending", 
+                                         selectedPackage.getName(), selectedPackage.getPrice());
+                } else {
+                    booking = new Booking(username, providerName, eventDate, location, eventTyple, "pending");
+                }
+            } else {
+                booking = new Booking(username, providerName, eventDate, location, eventTyple, "pending");
+            }
+
             boolean success = bookingService.createBooking(booking);
 
             if (success) {

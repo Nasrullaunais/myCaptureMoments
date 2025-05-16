@@ -15,6 +15,10 @@
         <p><span>Date:</span> <span th:text="${booking.formattedDate}">May 20, 2025</span></p>
         <p><span>Location:</span> <span th:text="${booking.location}">Colombo</span></p>
         <p><span>Status:</span> <span class="status" th:text="${booking.status}">Pending</span></p>
+        <div th:if="${booking.packageName != null && !booking.packageName.isEmpty()}">
+            <p><span>Package:</span> <span th:text="${booking.packageName}">Basic Package</span></p>
+            <p><span>Price:</span> <span th:text="'$' + ${booking.packagePrice}">$500</span></p>
+        </div>
     </div>
     <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
 </div>
