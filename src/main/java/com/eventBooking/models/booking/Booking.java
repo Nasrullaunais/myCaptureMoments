@@ -14,7 +14,7 @@ public class Booking {
     private String providerName;
     private String eventDate;
     private String location;
-    private String eventTyple;
+    private String eventType;
     private String formattedDate;
     private String packageName; // Added for package selection
     private int packagePrice; // Added for package price
@@ -23,13 +23,13 @@ public class Booking {
 
     // Add new constructor that includes bookingId
     public Booking(String bookingId, String username, String providerName, String eventDate,
-                   String location, String eventTyple, String status) {
+                   String location, String eventType, String status) {
         this.bookingId = bookingId;  // Use the provided bookingId instead of generating new one
         this.username = username;
         this.providerName = providerName;
         this.eventDate = eventDate;
         this.location = location;
-        this.eventTyple = eventTyple;
+        this.eventType = eventType;
         this.status = status;
         this.packageName = "";
         this.packagePrice = 0;
@@ -38,13 +38,13 @@ public class Booking {
 
     // Constructor that includes bookingId and package information
     public Booking(String bookingId, String username, String providerName, String eventDate,
-                   String location, String eventTyple, String status, String packageName, int packagePrice) {
+                   String location, String eventType, String status, String packageName, int packagePrice) {
         this.bookingId = bookingId;  // Use the provided bookingId instead of generating new one
         this.username = username;
         this.providerName = providerName;
         this.eventDate = eventDate;
         this.location = location;
-        this.eventTyple = eventTyple;
+        this.eventType = eventType;
         this.status = status;
         this.packageName = packageName;
         this.packagePrice = packagePrice;
@@ -53,13 +53,13 @@ public class Booking {
 
     // Keep existing constructor for new bookings
     public Booking(String username, String providerName, String eventDate,
-                   String location, String eventTyple, String status) {
+                   String location, String eventType, String status) {
         this.bookingId = UUID.randomUUID().toString();
         this.username = username;
         this.providerName = providerName;
         this.eventDate = eventDate;
         this.location = location;
-        this.eventTyple = eventTyple;
+        this.eventType = eventType;
         this.status = status;
         this.packageName = "";
         this.packagePrice = 0;
@@ -68,13 +68,13 @@ public class Booking {
 
     // Constructor for new bookings with package information
     public Booking(String username, String providerName, String eventDate,
-                   String location, String eventTyple, String status, String packageName, int packagePrice) {
+                   String location, String eventType, String status, String packageName, int packagePrice) {
         this.bookingId = UUID.randomUUID().toString();
         this.username = username;
         this.providerName = providerName;
         this.eventDate = eventDate;
         this.location = location;
-        this.eventTyple = eventTyple;
+        this.eventType = eventType;
         this.status = status;
         this.packageName = packageName;
         this.packagePrice = packagePrice;
@@ -107,7 +107,7 @@ public class Booking {
     public String getProviderName() { return providerName; }
     public String getEventDate() { return eventDate; }
     public String getLocation() { return location; }
-    public String getEventType() { return eventTyple; }
+    public String getEventType() { return eventType; }
     public String getStatus() { return status; }
     public String getPackageName() { return packageName; }
     public int getPackagePrice() { return packagePrice; }
@@ -117,7 +117,7 @@ public class Booking {
     }
 
     public String toFileString() {
-        return bookingId + "," + username + "," + providerName + "," + eventDate + "," + location + "," + eventTyple + "," + status + "," + packageName + "," + packagePrice;
+        return bookingId + "," + username + "," + providerName + "," + eventDate + "," + location + "," + eventType + "," + status + "," + packageName + "," + packagePrice;
     }
 
     public static Booking fromFileString(String line) {
@@ -137,7 +137,7 @@ public class Booking {
                 ", providerName='" + providerName + '\'' +
                 ", eventDate='" + eventDate + '\'' +
                 ", location='" + location + '\'' +
-                ", eventTyple='" + eventTyple + '\'' +
+                ", eventType='" + eventType + '\'' +
                 ", formattedDate='" + formattedDate + '\'' +
                 ", status='" + status + '\'' +
                 ", packageName='" + packageName + '\'' +
